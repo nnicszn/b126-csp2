@@ -3,28 +3,26 @@ import java.util.List;
 public class UserController {
     private UserService service = new UserService();
 
-    public void addUser(String name, String email) {
-        service.createUser(name, email);
+    public boolean registerUser(String name, String email, String password, String role) {
+        return service.register(name, email, password, role);
     }
 
-    public void showAllUsers() {
-        List<User> users = service.fetchAllUsers();
-        System.out.println("\n--- USER LIST ---");
-        if (users.isEmpty()) {
-            System.out.println("No users found.");
-        } else {
-            for (User u : users) {
-                System.out.println("ID: " + u.getId() + " | Name: " + u.getName() + " | Email: " + u.getEmail());
-            }
+    public User loginUser(String email, String password) {
+        return service.authenticate(email, password);
+    }
+
+    public void displayAllUsers() {
+        List<User> list = service.getAllUsers();
+        System.out.println("\n-----------------------------------------------------------");
+        System.out.printf("%-5s | %-20s | %-20s | %-10s\n", "ID", "Name", "Email", "Role");
+        System.out.println("-----------------------------------------------------------");
+        for (User u : list) {
+            System.out.printf("%-5d | %-20s | %-20s | %-10s\n", u.getId(), u.getName(), u.getEmail(), u.getRole());
         }
-        System.out.println("-----------------");
+        System.out.println("-----------------------------------------------------------");
     }
 
-    public void updateUser(int id, String name, String email) {
-        service.updateUser(id, name, email);
-    }
-
-    public void removeUser(int id) {
-        service.deleteUser(id);
+    public boolean deleteUser(int id) {
+        return service.removeUser(id);
     }
 }

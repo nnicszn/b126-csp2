@@ -1,39 +1,29 @@
 import java.util.List;
 
 public class UserService {
-    private UserRepository repository = new UserRepository();
+    private UserRepository repo = new UserRepository();
 
-    public void createUser(String name, String email) {
-        if (name.isEmpty() || email.isEmpty()) {
-            System.out.println("❌ Error: Name and Email cannot be empty.");
-            return;
+    public boolean register(String name, String email, String password, String role) {
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            System.out.println("❌ Error: All fields are required!");
+            return false;
         }
-        User user = new User(name, email);
-        if (repository.add(user)) {
-            System.out.println("✅ User successfully created!");
-        } else {
-            System.out.println("❌ Failed to create user.");
-        }
+        return repo.add(new User(name, email, password, role));
     }
 
-    public List<User> fetchAllUsers() {
-        return repository.getAll();
+    public User authenticate(String email, String password) {
+        if (email.isEmpty() || password.isEmpty()) {
+            System.out.println("❌ Email and password cannot be empty.");
+            return null;
+        }
+        return repo.login(email, password);
     }
 
-    public void updateUser(int id, String name, String email) {
-        User user = new User(id, name, email);
-        if (repository.update(user)) {
-            System.out.println("✅ User successfully updated!");
-        } else {
-            System.out.println("❌ Failed to update user.");
-        }
+    public List<User> getAllUsers() {
+        return repo.getAll();
     }
 
-    public void deleteUser(int id) {
-        if (repository.delete(id)) {
-            System.out.println("✅ User successfully deleted!");
-        } else {
-            System.out.println("❌ Failed to delete user.");
-        }
+    public boolean removeUser(int id) {
+        return repo.delete(id);
     }
 }
